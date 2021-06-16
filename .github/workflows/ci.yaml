@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - run: Set up Poetry
+        run: |
+          pip install poetry
+          poetry config virtualenvs.in-project true
+      - name: Set up cache
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: ${{ runner.os }}-venv-py3.9-${{ hashFiles('**/poetry.lock') }}
+      - name: Install package
+        run: poetry install
+      - name: Run linters
+        run: poetry run task lint
+      - name: Run tests
+        run: poetry run task test
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'cd skip')
+    steps:
+      - uses: actions/checkout@v2
+      - name: Bump version
+        uses: TriPSs/conventional-changelog-action@v3
+        id: version
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          git-user-name: "GitHub Actions"
+          git-user-email: "action@github.com"
+          version-file: pyproject.toml
+          version-path: tool.poetry.version
+          preset: conventionalcommits
+          output-file: false
+      - name: Publish to GitHub
+        if: steps.version.outputs.skipped == 'false'
+        run: gh release create "$TAG" --notes "$BODY"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+          BODY: ${{ steps.version.outputs.clean_changelog }}
+      - name: Publish to PyPI
+        if: steps.version.outputs.skipped == 'false'
+        run: pip install poetry && poetry publish --build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+      

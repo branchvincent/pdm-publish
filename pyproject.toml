@@ -1,0 +1,43 @@
+[tool.poetry]
+name = "pdm-publish"
+version = "0.1.0"
+description = "A PDM plugin to publish to PyPI"
+authors = ["Branch Vincent <branchevincent@gmail.com>"]
+repository = "https://github.com/branchvincent/pdm-publish"
+packages = [{ include = "pdm_publish", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+black = "^21.6b0"
+flake8 = "^3.9.2"
+isort = "^5.8.0"
+mypy = "^0.902"
+pre-commit = "^2.13.0"
+pyproject-flake8 = "^0.0.1-alpha.2"
+pytest = "^6.2.4"
+taskipy = "^1.8.1"
+
+[tool.taskipy.tasks]
+clean = { cmd = "rm -rf .mypy_cache/ .pytest_cache/ build/ dist/ *.egg-info", help = "Remove build artifacts" }
+lint = { cmd = "pre-commit run --all-files", help = "Run linters and formatters" }
+test = { cmd = "pytest", help = "Run tests" }
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = "E203"
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+strict = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["poetry-core>=1.0"]
+build-backend = "poetry.core.masonry.api"
