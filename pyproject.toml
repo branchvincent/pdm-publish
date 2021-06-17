@@ -7,7 +7,9 @@ repository = "https://github.com/branchvincent/pdm-publish"
 packages = [{ include = "pdm_publish", from = "src" }]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.7"
+twine = "^3"
+pdm = "^1"
 
 [tool.poetry.dev-dependencies]
 black = "^21.6b0"
@@ -18,6 +20,9 @@ pre-commit = "^2.13.0"
 pyproject-flake8 = "^0.0.1-alpha.2"
 pytest = "^6.2.4"
 taskipy = "^1.8.1"
+
+[tool.poetry.plugins.pdm]
+publish = "pdm_publish.__init__:main"
 
 [tool.taskipy.tasks]
 clean = { cmd = "rm -rf .mypy_cache/ .pytest_cache/ build/ dist/ *.egg-info", help = "Remove build artifacts" }

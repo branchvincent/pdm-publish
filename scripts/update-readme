@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+
+# from pdm_publish.config import CONFIG
+import re
+import sys
+from pathlib import Path
+from subprocess import check_output
+
+README = Path(__file__).parents[1] / "README.md"
+USAGE_RE = r"""
+```sh
+\$ pdm publish --help
+(?P<usage>.*?)
+```
+"""
+CONFIG_RE = r"""
+\#\# Configuration
+(?P<config>.*?)
+\#\# Links
+```
+"""
+
+
+def update_usage() -> None:
+    usage = check_output([sys.executable, "-m", "pdm", "publish", "--help"], text=True)
+    md = USAGE_RE.replace("(?P<usage>.*?)", usage)
+    new = re.compile(USAGE_RE, re.DOTALL).sub(md, README.read_text())
+    README.write_text(new)
+
+
+def update_config() -> None:
+    from pdm_publish.config import CONFIG
+
+    table = [
+        "| Config Item | Description | Default Value | Available in Project | Env var |"
+    ]
+    table.append(
+        "| ----------- | ----------- | ------------- | -------------------- | ------- |"
+    )
+    for k, v in CONFIG.items():
+        table.append(
+            f"|`{k}`|{v.description}|`{v.default}`|{not v.global_only}|`{v.env_var}`|"
+        )
+
+    md = CONFIG_RE.replace("?P<config>.*?)", "\n".join(table))
+    new = re.compile(CONFIG_RE, re.DOTALL).sub(md, README.read_text())
+    README.write_text(new)
+    print(md)
+
+
+update_usage()
+update_config()
