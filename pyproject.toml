@@ -7,7 +7,7 @@ repository = "https://github.com/branchvincent/pdm-publish"
 packages = [{ include = "pdm_publish", from = "src" }]
 
 [tool.poetry.dependencies]
-python = ">=3.7"
+python = "^3.7"
 twine = "^3"
 pdm = "^1"
 
@@ -20,6 +20,7 @@ pre-commit = "^2.13.0"
 pyproject-flake8 = "^0.0.1-alpha.2"
 pytest = "^6.2.4"
 taskipy = "^1.8.1"
+pytest-mock = "^3.6.1"
 
 [tool.poetry.plugins.pdm]
 publish = "pdm_publish.__init__:main"
@@ -39,9 +40,11 @@ profile = "black"
 [tool.mypy]
 strict = true
 ignore_missing_imports = true
+disallow_untyped_decorators = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
 
 [build-system]
 requires = ["poetry-core>=1.0"]
