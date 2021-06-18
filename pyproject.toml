@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pdm-publish"
-version = "0.1.0"
+version = "0.2.0"
 description = "A PDM plugin to publish to PyPI"
 authors = ["Branch Vincent <branchevincent@gmail.com>"]
 repository = "https://github.com/branchvincent/pdm-publish"
