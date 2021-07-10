@@ -11,23 +11,40 @@ A PDM plugin to publish to PyPI
 
 ## Installation
 
-If you installed `pdm` via `pipx`:
+With `pdm` 1.6.4+:
 
 ```sh
-pipx inject pdm pdm-publish
+pdm plugin add pdm-publish
 ```
 
-or `brew`:
+Otherwise, installation depends on how `pdm` was installed:
 
-```sh
-$(brew --prefix pdm)/libexec/bin/python -m pip install pdm-publish
-```
+<details>
+  <summary>pipx</summary>
 
-or `pip`:
+  ```sh
+  pipx inject pdm pdm-publish
+  ```
 
-```sh
-pip install --user pdm-publish
-```
+</details>
+
+<details>
+  <summary>brew</summary>
+
+  ```sh
+  $(brew --prefix pdm)/libexec/bin/python -m pip install pdm-publish
+  ```
+
+</details>
+
+<details>
+  <summary>pip</summary>
+
+  ```sh
+  pip install --user pdm-publish
+  ```
+
+</details>
 
 ## Usage
 
