@@ -20,7 +20,7 @@ class Publisher:
 
     @property
     def ui(self) -> termui.UI:
-        return self.project.core.ui
+        return self.project.core.ui  # type: ignore
 
     @property
     def files(self) -> list[str]:

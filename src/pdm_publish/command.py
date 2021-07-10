@@ -10,7 +10,7 @@ from pdm.exceptions import PdmUsageError
 from .core import Publisher
 
 
-class PublishCommand(BaseCommand):  # type: ignore
+class PublishCommand(BaseCommand):
     """Upload artifacts to a remote repository"""
 
     name = "publish"
